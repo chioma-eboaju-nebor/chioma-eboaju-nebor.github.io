@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chioma Eboaju-Nebor — Implementation & Application Support</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F7F9;
+    --panel:#FFFFFF;
+    --ink:#10192E;
+    --ink-soft:#4A5568;
+    --navy:#1B2A4A;
+    --navy-deep:#0F1B33;
+    --accent:#2F7A6D;
+    --accent-soft:#E4F0EC;
+    --amber:#C77D2E;
+    --line:#DCE0E6;
+    --mono: 'IBM Plex Mono', monospace;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--body);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{ color:inherit; }
+  :focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+
+  .wrap{ max-width:1080px; margin:0 auto; padding:0 28px; }
+
+  /* NAV */
+  header.nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(246,247,249,0.88);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px; max-width:1080px; margin:0 auto;
+  }
+  .nav-mark{
+    font-family:var(--mono); font-size:13px; letter-spacing:0.02em;
+    display:flex; align-items:center; gap:8px; font-weight:500;
+  }
+  .nav-mark .dot{
+    width:8px; height:8px; border-radius:50%; background:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
+  .nav-links{ display:flex; gap:28px; font-size:14px; font-weight:500; }
+  .nav-links a{ text-decoration:none; color:var(--ink-soft); transition:color .15s; }
+  .nav-links a:hover{ color:var(--ink); }
+
+  @media (max-width:640px){
+    .nav-links{ gap:16px; font-size:13px; }
+  }
+
+  /* HERO */
+  section.hero{ padding:72px 0 40px; }
+  .eyebrow{
+    font-family:var(--mono); font-size:12.5px; color:var(--accent);
+    text-transform:uppercase; letter-spacing:0.08em;
+    display:flex; align-items:center; gap:10px; margin-bottom:22px;
+  }
+  .eyebrow::before{
+    content:''; width:22px; height:1px; background:var(--accent);
+  }
+  h1{
+    font-family:var(--display); font-weight:600;
+    font-size:clamp(2.2rem, 5vw, 3.6rem);
+    line-height:1.05; margin:0 0 18px; letter-spacing:-0.01em;
+  }
+  .tagline{
+    font-size:clamp(1.05rem, 2vw, 1.25rem); color:var(--ink-soft);
+    max-width:620px; margin:0 0 36px; font-weight:400;
+  }
+  .hero-links{ display:flex; gap:14px; flex-wrap:wrap; margin-bottom:56px; }
+  .hero-links a{
+    font-family:var(--mono); font-size:13px; text-decoration:none;
+    padding:10px 16px; border:1px solid var(--line); border-radius:6px;
+    background:var(--panel); transition:border-color .15s, transform .15s;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .hero-links a:hover{ border-color:var(--accent); transform:translateY(-1px); }
+  .hero-links a.primary{ background:var(--navy); color:#fff; border-color:var(--navy); }
+  .hero-links a.primary:hover{ border-color:var(--navy); }
+
+  /* LIFECYCLE RAIL — signature element */
+  .rail-label{
+    font-family:var(--mono); font-size:12px; color:var(--ink-soft);
+    margin-bottom:14px; text-transform:uppercase; letter-spacing:0.06em;
+  }
+  .rail{
+    display:flex; border:1px solid var(--line); border-radius:10px;
+    overflow:hidden; background:var(--panel);
+  }
+  .rail-stage{
+    flex:1; padding:16px 14px; position:relative;
+    border-right:1px solid var(--line);
+  }
+  .rail-stage:last-child{ border-right:none; }
+  .rail-stage .n{
+    font-family:var(--mono); font-size:11px; color:var(--ink-soft); display:block; margin-bottom:6px;
+  }
+  .rail-stage .label{
+    font-size:13.5px; font-weight:600; letter-spacing:-0.01em;
+  }
+  .rail-stage.on{ background:var(--accent-soft); }
+  .rail-stage.on .n{ color:var(--accent); }
+  .rail-stage::after{
+    content:''; position:absolute; left:0; right:0; bottom:0; height:3px;
+    background:var(--line);
+  }
+  .rail-stage.on::after{ background:var(--accent); }
+  .rail-note{
+    font-family:var(--mono); font-size:12px; color:var(--ink-soft); margin-top:12px;
+  }
+
+  @media (max-width:720px){
+    .rail{ flex-wrap:wrap; }
+    .rail-stage{ flex:1 1 33%; border-bottom:1px solid var(--line); }
+  }
+
+  /* SECTIONS */
+  section{ padding:64px 0; border-top:1px solid var(--line); }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; margin-bottom:36px; gap:20px; flex-wrap:wrap; }
+  h2{
+    font-family:var(--display); font-size:1.5rem; font-weight:600; margin:0;
+    letter-spacing:-0.01em;
+  }
+  .section-num{ font-family:var(--mono); font-size:12.5px; color:var(--ink-soft); }
+
+  /* ABOUT */
+  .about-grid{ display:grid; grid-template-columns:1.3fr 1fr; gap:48px; }
+  .about-grid p{ color:var(--ink-soft); margin:0 0 16px; font-size:15.5px; max-width:540px; }
+  .about-grid p strong{ color:var(--ink); font-weight:600; }
+  .skills{ display:flex; flex-direction:column; gap:0; }
+  .skill-row{
+    display:flex; justify-content:space-between; padding:12px 0;
+    border-bottom:1px solid var(--line); font-size:14px;
+  }
+  .skill-row:first-child{ border-top:1px solid var(--line); }
+  .skill-row .k{ color:var(--ink-soft); font-family:var(--mono); font-size:12.5px; }
+  .skill-row .v{ font-weight:500; text-align:right; }
+
+  @media (max-width:800px){
+    .about-grid{ grid-template-columns:1fr; }
+  }
+
+  /* PROJECTS */
+  .projects{ display:flex; flex-direction:column; gap:20px; }
+  .project{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:28px; transition:border-color .15s;
+  }
+  .project:hover{ border-color:var(--accent); }
+  .project-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap; margin-bottom:14px; }
+  .project h3{ font-family:var(--display); font-size:1.2rem; margin:0; font-weight:600; }
+  .project-domain{ font-family:var(--mono); font-size:11.5px; color:var(--accent); background:var(--accent-soft); padding:4px 10px; border-radius:100px; white-space:nowrap; }
+  .project p.desc{ color:var(--ink-soft); font-size:14.5px; max-width:640px; margin:0 0 18px; }
+  .stage-tags{ display:flex; flex-wrap:wrap; gap:8px; }
+  .stage-tag{
+    font-family:var(--mono); font-size:11px; padding:5px 10px;
+    border:1px solid var(--line); border-radius:6px; color:var(--ink-soft);
+  }
+  .stage-tag.covered{ border-color:var(--accent); color:var(--accent); background:var(--accent-soft); }
+
+  /* WRITING */
+  .writing-list{ display:flex; flex-direction:column; }
+  .post{
+    display:flex; justify-content:space-between; align-items:baseline; gap:20px;
+    padding:20px 0; border-bottom:1px solid var(--line); text-decoration:none;
+    color:inherit; transition:padding-left .15s;
+  }
+  .post:first-child{ border-top:1px solid var(--line); }
+  .post:hover{ padding-left:6px; }
+  .post-left{ display:flex; flex-direction:column; gap:4px; }
+  .post-title{ font-family:var(--display); font-size:1.02rem; font-weight:600; }
+  .post-excerpt{ font-size:13.5px; color:var(--ink-soft); max-width:520px; }
+  .post-meta{ font-family:var(--mono); font-size:11.5px; color:var(--ink-soft); white-space:nowrap; }
+  .writing-note{ font-family:var(--mono); font-size:12px; color:var(--ink-soft); margin-top:16px; }
+
+  /* CONTACT / FOOTER */
+  footer{ padding:64px 0 48px; border-top:1px solid var(--line); }
+  .contact-panel{
+    background:var(--navy); color:#fff; border-radius:14px;
+    padding:44px 36px; display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap;
+  }
+  .contact-panel h2{ color:#fff; margin-bottom:8px; }
+  .contact-panel p{ color:#C3CBDA; margin:0; font-size:14.5px; max-width:380px; }
+  .contact-links{ display:flex; flex-direction:column; gap:10px; }
+  .contact-links a{
+    text-decoration:none; font-family:var(--mono); font-size:13.5px;
+    display:flex; align-items:center; gap:10px; color:#fff;
+    padding:9px 4px; border-bottom:1px solid rgba(255,255,255,0.14);
+    transition:opacity .15s;
+  }
+  .contact-links a:hover{ opacity:0.7; }
+  .contact-links a .arrow{ color:var(--accent); }
+  .footer-note{
+    text-align:center; margin-top:32px; font-family:var(--mono);
+    font-size:12px; color:var(--ink-soft);
+  }
+
+  @media (max-width:640px){
+    .contact-panel{ padding:32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="nav-mark"><span class="dot"></span> C. EBOAJU-NEBOR</div>
+    <nav class="nav-links">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#writing">Writing</a>
+      <a href="Chioma_Eboaju-Nebor_Resume.pdf" download>Resume ↓</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">Application Support &amp; Implementation</div>
+    <h1>Chioma Eboaju-Nebor</h1>
+    <p class="tagline">I take software solutions from first requirement to live deployment — and keep them running well after go-live. My focus: loan origination and loan management systems.</p>
+
+    <div class="hero-links">
+      <a class="primary" href="mailto:chiomaeboaju@gmail.com">Email me →</a>
+      <a href="Chioma_Eboaju-Nebor_Resume.pdf" download>Download résumé ↓</a>
+      <a href="https://github.com/chioma-eboaju-nebor" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/chioma-eboaju-nebor" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+
+    <div class="rail-label">Where I plug in on a project</div>
+    <div class="rail">
+      <div class="rail-stage on"><span class="n">01</span><span class="label">Initiation</span></div>
+      <div class="rail-stage on"><span class="n">02</span><span class="label">Requirements</span></div>
+      <div class="rail-stage on"><span class="n">03</span><span class="label">Configuration</span></div>
+      <div class="rail-stage on"><span class="n">04</span><span class="label">UAT</span></div>
+      <div class="rail-stage on"><span class="n">05</span><span class="label">Deployment</span></div>
+      <div class="rail-stage on"><span class="n">06</span><span class="label">Support</span></div>
+    </div>
+    <div class="rail-note">Every stage highlighted — that's the point. I don't hand off between phases, I own the whole line.</div>
+  </section>
+
+  <section id="about">
+    <div class="section-head">
+      <h2>About</h2>
+      <span class="section-num">Scope of work</span>
+    </div>
+    <div class="about-grid">
+      <div>
+        <p><strong>I sit at the point where a business requirement becomes a working system, and stay there until it's stable in production.</strong> That means gathering requirements alongside stakeholders, configuring the solution, running or supporting UAT, coordinating deployment, and handling the support tickets that come in afterward.</p>
+        <p>Most of my work has been on <strong>loan origination and loan management platforms</strong> — systems where accuracy, audit trails, and uptime aren't negotiable. I've learned to read a process end-to-end: what a loan officer needs on screen, what the credit team needs in a report, and what breaks quietly in production if configuration is off by one rule.</p>
+        <p>I'm the person a project team calls when something in the live system doesn't match what was signed off — and the one who can trace it back to the requirement, the config, or the release.</p>
+      </div>
+      <div class="skills">
+        <div class="skill-row"><span class="k">DOMAIN</span><span class="v">Loan origination, loan management</span></div>
+        <div class="skill-row"><span class="k">ROLE</span><span class="v">Implementation & application support</span></div>
+        <div class="skill-row"><span class="k">LIFECYCLE</span><span class="v">Initiation through hypercare</span></div>
+        <div class="skill-row"><span class="k">STAKEHOLDERS</span><span class="v">Credit, ops, IT, end users</span></div>
+        <div class="skill-row"><span class="k">FOCUS</span><span class="v">UAT, deployment, incident resolution</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects">
+    <div class="section-head">
+      <h2>Projects</h2>
+      <span class="section-num">Selected work</span>
+    </div>
+    <div class="projects">
+
+      <div class="project">
+        <div class="project-top">
+          <h3>Loan Origination System</h3>
+          <span class="project-domain">Lending · Front office</span>
+        </div>
+        <p class="desc">Implementation of a loan origination solution covering application intake, credit checks, and approval workflow. Involved from initial requirements gathering through configuration, UAT coordination, and go-live support.</p>
+        <div class="stage-tags">
+          <span class="stage-tag covered">Initiation</span>
+          <span class="stage-tag covered">Requirements</span>
+          <span class="stage-tag covered">Configuration</span>
+          <span class="stage-tag covered">UAT</span>
+          <span class="stage-tag covered">Deployment</span>
+          <span class="stage-tag covered">Support</span>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="project-top">
+          <h3>Core Banking Implementation</h3>
+          <span class="project-domain">Core banking · Platform</span>
+        </div>
+        <p class="desc">Support for a core banking implementation underpinning lending operations — account and transaction processing tied directly to loan products. Worked across requirements, configuration, and UAT with the wider banking team, then carried the solution through go-live and into support.</p>
+        <div class="stage-tags">
+          <span class="stage-tag covered">Initiation</span>
+          <span class="stage-tag covered">Requirements</span>
+          <span class="stage-tag covered">Configuration</span>
+          <span class="stage-tag covered">UAT</span>
+          <span class="stage-tag covered">Deployment</span>
+          <span class="stage-tag covered">Support</span>
+        </div>
+      </div>
+
+      <div class="project">
+        <div class="project-top">
+          <h3>Loan Management Solution</h3>
+          <span class="project-domain">Lending · Back office</span>
+        </div>
+        <p class="desc">End-to-end delivery of a loan management platform handling disbursement, repayment schedules, and post-disbursement monitoring. Owned the bridge between business requirements and system configuration, then supported the live environment.</p>
+        <div class="stage-tags">
+          <span class="stage-tag covered">Initiation</span>
+          <span class="stage-tag covered">Requirements</span>
+          <span class="stage-tag covered">Configuration</span>
+          <span class="stage-tag covered">UAT</span>
+          <span class="stage-tag covered">Deployment</span>
+          <span class="stage-tag covered">Support</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="writing">
+    <div class="section-head">
+      <h2>Writing</h2>
+      <span class="section-num">Notes from the field</span>
+    </div>
+    <div class="writing-list">
+      <a class="post" href="#">
+        <div class="post-left">
+          <span class="post-title">What UAT actually catches</span>
+          <span class="post-excerpt">The bugs that make it past development aren't usually about broken screens — they're about a rule that made sense in isolation and fell apart against a real case file.</span>
+        </div>
+        <span class="post-meta">Draft</span>
+      </a>
+      <a class="post" href="#">
+        <div class="post-left">
+          <span class="post-title">The quiet part of go-live: hypercare</span>
+          <span class="post-excerpt">Deployment day gets the attention. The two weeks after are where you find out if the configuration actually matches how people work.</span>
+        </div>
+        <span class="post-meta">Draft</span>
+      </a>
+      <a class="post" href="#">
+        <div class="post-left">
+          <span class="post-title">Tracing a ticket back to its source</span>
+          <span class="post-excerpt">A support ticket rarely tells you whether the root cause is a requirement, a config setting, or a release — a habit for narrowing it down quickly.</span>
+        </div>
+        <span class="post-meta">Draft</span>
+      </a>
+    </div>
+    <div class="writing-note">These are placeholders — swap in your own posts, or link out to LinkedIn articles.</div>
+  </section>
+
+  <footer id="contact">
+    <div class="contact-panel">
+      <div>
+        <h2>Let's talk</h2>
+        <p>Open to implementation, application support, and technical analyst roles on lending and financial systems.</p>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:chiomaeboaju@gmail.com"><span class="arrow">→</span> chiomaeboaju@gmail.com</a>
+        <a href="https://github.com/chioma-eboaju-nebor" target="_blank" rel="noopener"><span class="arrow">→</span> github.com/chioma-eboaju-nebor</a>
+        <a href="https://www.linkedin.com/in/chioma-eboaju-nebor" target="_blank" rel="noopener"><span class="arrow">→</span> linkedin.com/in/chioma-eboaju-nebor</a>
+      </div>
+    </div>
+    <div class="footer-note">© 2026 Chioma Eboaju-Nebor</div>
+  </footer>
+
+</main>
+
+</body>
+</html>
